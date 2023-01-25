@@ -33,18 +33,18 @@ router.get('/:id', async (req, res) => {
 });
 
 // create new product
-  /* req.body should look like this...
-    {
-      product_name: "Jordan Shoes",
-      price: 300.00,
-      stock: 2,
-      category_id: 
-      tagIds: [1, 2, 3, 4]
-    }
-  */
+/* req.body should look like this...
+  {
+    product_name: "Jordan Shoes",
+    price: 300.00,
+    stock: 2,
+    category_id: 
+    tagIds: [1, 2, 3, 4]
+  }
+*/
 
-    
-    router.post('/', (req, res) => {
+
+router.post('/', (req, res) => {
   Product.create(req.body)
     .then((product) => {
       if (req.body.tagIds.length) {
@@ -58,13 +58,55 @@ router.get('/:id', async (req, res) => {
       }
       res.status(200).json(product);
     })
-    .then((productsTagIds) => res.status(200).json(productsTagIds))
+    .then((productsIds) => res.status(200).json(productsIds))
     .catch((err) => {
       console.log(err);
       res.status(400).json(err);
     });
 });
 
+// update product
+router.put('/:id', async (req, res) => {
+  // update product data
+  await Product.update(req.body, {
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((product) => {
+      // find all associated tags from ProductTag
+      return ProductTag.findAll({ where: { product_id: req.params.id } });
+    })
+    .then((productTags) => {
+      // get list of current tag_ids
+      const productIds = productTags.map(({ tag_id }) => tag_id);
+      // create filtered list of new tag_ids
+      const newPTags = req.body.tagIds
+        .filter((tag_id) => !productIds.includes(tag_id))
+        .map((tag_id) => {
+          return {
+            product_id: req.params.id,
+            tag_id,
+          };
+        });
+      // figure out which ones to remove
+      const productRemove = productTags
+        .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
+        .map(({ id }) => id);
+
+      // run both actions
+      return Promise.all([
+        ProductTag.destroy({ where: { id: productRemove } }),
+        ProductTag.bulkCreate(newPTags),
+      ]);
+    })
+    .then((updatedProduct) => res.json(updatedProduct))
+    .catch((err) => {
+      // console.log(err);
+      res.status(400).json(err);
+    });
+});
 
 
+module.exports = router;
 
