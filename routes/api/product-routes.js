@@ -32,18 +32,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// create new product
-/* req.body should look like this...
-  {
-    product_name: "Jordan Shoes",
-    price: 300.00,
-    stock: 2,
-    category_id: 
-    tagIds: [1, 2, 3, 4]
-  }
-*/
-
-
 router.post('/', (req, res) => {
   Product.create(req.body)
     .then((product) => {
@@ -73,13 +61,10 @@ router.put('/:id', async (req, res) => {
     },
   })
     .then((product) => {
-      // find all associated tags from ProductTag
       return ProductTag.findAll({ where: { product_id: req.params.id } });
     })
     .then((productTags) => {
-      // get list of current tag_ids
       const productId = productTags.map(({ tag_id }) => tag_id);
-      // create filtered list of new tag_ids
       const newPTags = req.body.tagIds
         .filter((tag_id) => !productId.includes(tag_id))
         .map((tag_id) => {
@@ -88,12 +73,10 @@ router.put('/:id', async (req, res) => {
             tag_id,
           };
         });
-      // figure out which ones to remove
       const productRemove = productTags
         .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
         .map(({ id }) => id);
 
-      // run both actions
       return Promise.all([
         ProductTag.destroy({ where: { id: productRemove } }),
         ProductTag.bulkCreate(newPTags),
@@ -101,7 +84,6 @@ router.put('/:id', async (req, res) => {
     })
     .then((updatedProduct) => res.json(updatedProduct))
     .catch((err) => {
-      // console.log(err);
       res.status(400).json(err);
     });
 });
