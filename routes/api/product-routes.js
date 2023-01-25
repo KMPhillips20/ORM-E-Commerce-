@@ -58,17 +58,16 @@ router.post('/', (req, res) => {
       }
       res.status(200).json(product);
     })
-    .then((productsIds) => res.status(200).json(productsIds))
+    .then((productsId) => res.status(200).json(productsId))
     .catch((err) => {
       console.log(err);
       res.status(400).json(err);
     });
 });
 
-// update product
+
 router.put('/:id', async (req, res) => {
-  // update product data
-  await Product.update(req.body, {
+   await Product.update(req.body, {
     where: {
       id: req.params.id,
     },
@@ -79,10 +78,10 @@ router.put('/:id', async (req, res) => {
     })
     .then((productTags) => {
       // get list of current tag_ids
-      const productIds = productTags.map(({ tag_id }) => tag_id);
+      const productId = productTags.map(({ tag_id }) => tag_id);
       // create filtered list of new tag_ids
       const newPTags = req.body.tagIds
-        .filter((tag_id) => !productIds.includes(tag_id))
+        .filter((tag_id) => !productId.includes(tag_id))
         .map((tag_id) => {
           return {
             product_id: req.params.id,

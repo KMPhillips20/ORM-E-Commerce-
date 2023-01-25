@@ -17,6 +17,7 @@ router.get('/', async (req, res) => {
 }
 });
 
+
 router.get('/:id', async (req, res) => {
   try {
     const tagged = await Tag.findByPk(req.params.id, {
@@ -30,6 +31,7 @@ router.get('/:id', async (req, res) => {
     res.json(err);
 }
 });
+
 
 router.post('/', async (req, res) => {
   try {
