@@ -22,7 +22,17 @@ a full-stack web developer.
 ***
 
 ## Visuals
+Categories
 
+![Categories](./images/categories.jpg)
+
+Products
+
+![Products](./images/products.jpg)
+
+Tags
+
+![Tags](./images/tags.jpg)
 ***
 
 ## Links
