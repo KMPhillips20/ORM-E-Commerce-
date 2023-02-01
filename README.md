@@ -38,5 +38,4 @@ Tags
 ## Links
 Link to GitHub: [ORM-E-Commerce](https://github.com/KMPhillips20/ORM-E-Commerce-)
 
-Link to walkthrough video: [Walkthrough-Video](https://drive.google.com/file/d/1cLBnK1ytBQgQfRCiS03_5WbH4FkZTBYe/view)
-***
+Link to walkthrough video: [Walkthrough-Video](https://drive.google.com/file/d/17gEgJ0Gp5tm19-8FEFha26xsBGb9ZvhZ/view)
